@@ -6,9 +6,6 @@ import { UserContext } from "../lib/context";
 export default function NavBar({}) {
     const { user, username} = useContext(UserContext);
 
-    // const user = null;
-    // const username = null;
-
     return (
         <div className="w-full flex gap-2 items-end md:gap-10 bg-zinc-900 h-16 md:h-24 py-3 pl-4 pr-3 md:py-4 md:pl-40 md:pr-40">
             <Link
