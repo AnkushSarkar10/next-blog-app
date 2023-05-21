@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
     return (
         <>
-            <UserContext.Provider value={{ user: null, username: null }}>
+            <UserContext.Provider value={{ user: userData.user, username: userData.username }}>
                 <NavBar />
                 <Component {...pageProps} />
                 <Toaster />

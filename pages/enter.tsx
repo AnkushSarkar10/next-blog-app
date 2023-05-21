@@ -1,4 +1,6 @@
-import { auth, googleAuthProvider, firestore } from "../lib/firebase";
+import { auth, googleProvider, firestore } from "../lib/firebase";
+import { signInWithPopup, getAdditionalUserInfo } from "firebase/auth";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { useCallback, useContext, useEffect, useState } from "react";
 import debounce from "lodash.debounce";
 import { UserContext } from "../lib/context";
@@ -9,17 +11,34 @@ export default function EnterPage({}) {
     return (
         <main className="pt-32 pl-20">
             {!username && !user && <SignInButton />}
+            {!username && user && <UsernameForm />}
             {username && user && <SignOutButton />}
-
-            {/* <UsernameForm /> */}
         </main>
     );
 }
 
 // TODO
 function SignInButton() {
-    async function signInWithGoogle() {
-        await auth.signInWithPopup(googleAuthProvider);
+    function signInWithGoogle() {
+        signInWithPopup(auth, googleProvider)
+            .then((result) => {
+                const user = result.user;
+                const details = getAdditionalUserInfo(result);
+                if (details?.isNewUser) {
+                    const userRef = doc(firestore, "users", user.uid);
+                    const userData = {
+                        displayname: user.displayName,
+                        photoURL: user.photoURL,
+                        username: null,
+                    };
+                    return setDoc(userRef, { ...userData });
+                } else {
+                    console.log("User already exists");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
     return (
         <>
@@ -67,22 +86,18 @@ function UsernameForm() {
         checkUsername(formValue);
     }, [formValue]);
 
-    async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    function onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         // Create refs for both documents
-        const userDoc = firestore.doc(`users/${user?.uid}`);
-        const usernameDoc = firestore.doc(`usernames/${formValue}`);
 
-        // Commit both docs together as a batch write.
-        const batch = firestore.batch();
-        batch.set(userDoc, {
-            username: formValue,
-            photoURL: user?.photoURL,
-            displayName: user?.displayName,
-        });
-        batch.set(usernameDoc, { uid: user?.uid });
-
-        await batch.commit();
+        if (isValid && !loading) {
+            const userRef = doc(firestore, "users", user?.uid as string);
+            const usernameRef = doc(firestore, "username", formValue);
+            setDoc(usernameRef, { uid: user?.uid as string });
+            updateDoc(userRef, { username: formValue }).catch((e) => {
+                console.log(e);
+            });
+        }
     }
 
     function onChange(val: any) {
@@ -101,12 +116,14 @@ function UsernameForm() {
     }
 
     const checkUsername = useCallback(
-        debounce(async (username) => {
+        debounce((username) => {
             if (username.length >= 3) {
-                const ref = firestore.doc(`usernames/${username}`);
-                const { exists } = await ref.get();
+                const usernameRef = doc(firestore, "username", username);
+                getDoc(usernameRef).then((docSnap) => {
+                    const exists = docSnap.exists();
+                    setIsValid(!exists);
+                });
                 console.log("Firestore read executed!");
-                setIsValid(!exists);
                 setLoading(false);
             }
         }, 500),

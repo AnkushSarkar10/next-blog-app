@@ -1,7 +1,7 @@
-import firebase from 'firebase/compat/app'
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/compat/storage';
+import { initializeApp } from 'firebase/app'
+import  { getAuth, GoogleAuthProvider  } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+// import 'firebase/compat/storage';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCa8qdPrRFqcbAa-h7zftua7NEw6pxKcMw",
@@ -13,11 +13,15 @@ const firebaseConfig = {
     measurementId: "G-F3248LZV22"
 };
 
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig)
-}
-// console.log(firebase.app);
-export const auth = firebase.auth();
-export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-export const firestore = firebase.firestore();
-export const storage = firebase.storage();
+initializeApp(firebaseConfig);
+
+export const auth = getAuth();
+export const googleProvider = new GoogleAuthProvider();
+export const firestore = getFirestore();
+
+// if (!firebase.apps.length) {
+//     firebase.initializeApp(firebaseConfig)
+// }
+// // console.log(firebase.app);
+// export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+// export const storage = firebase.storage();
