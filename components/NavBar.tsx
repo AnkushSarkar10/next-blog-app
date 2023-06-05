@@ -2,9 +2,8 @@ import Link from "next/link";
 import { useContext } from "react";
 import { UserContext } from "../lib/context";
 
-
 export default function NavBar({}) {
-    const { user, username} = useContext(UserContext);
+    const { user, username } = useContext(UserContext);
 
     return (
         <div className="w-full flex gap-2 items-end md:gap-10 bg-zinc-900 h-16 md:h-24 py-3 pl-4 pr-3 md:py-4 md:pl-40 md:pr-40">
@@ -28,8 +27,8 @@ export default function NavBar({}) {
                     >
                         <h1>Create Post</h1>
                     </Link>
-                    <Link href="/" className="w-fit h-fit ">
-                        {/* <img src={user?.photoURL} alt="pic" /> */}
+                    <Link href={`/${username}`} className="w-fit h-fit ">
+                        <img className="rounded-full w-14" src={user?.photoURL || ""} alt="pic" />
                     </Link>
                 </>
             )}

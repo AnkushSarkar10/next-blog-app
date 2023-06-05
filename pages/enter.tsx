@@ -139,10 +139,17 @@ function UsernameForm() {
                         className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         type="text"
                         name="username"
+                        autoComplete="off"
                         value={formValue}
                         onChange={(event) => onChange(event.target.value)}
                     />
                 </div>
+                <UsernameMessage
+                    username={formValue}
+                    isValid={isValid}
+                    loading={loading}
+                />
+
                 <button className="bg-slate-100 text-slate-700 mb-4 text-lg font-semibold py-2 px-4 rounded-lg hover:border-slate-400 hover:text-slate-900 hover:shadow transition duration-150">
                     Choose
                 </button>
@@ -158,4 +165,22 @@ function UsernameForm() {
             </form>
         </>
     );
+}
+
+interface Thing {
+    username: string;
+    isValid: Boolean;
+    loading: Boolean;
+}
+
+function UsernameMessage({ username, isValid, loading }: Thing) {
+    if (loading) {
+        return <p className="pb-2 font-medium">Checking...</p>;
+    } else if (isValid) {
+        return <p className="pb-2 text-green-400 font-medium"><span className="font-semibold">{username}</span> is available!</p>;
+    } else if (username && !isValid && (username.length > 4)) {
+        return <p className="pb-2 text-red-400 font-medium">That username is taken!</p>;
+    } else {
+        return <p></p>;
+    }
 }
