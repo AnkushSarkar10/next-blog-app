@@ -15,13 +15,13 @@ import {
 // import 'firebase/compat/storage';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCa8qdPrRFqcbAa-h7zftua7NEw6pxKcMw",
-    authDomain: "next-blog-app-3acd3.firebaseapp.com",
-    projectId: "next-blog-app-3acd3",
-    storageBucket: "next-blog-app-3acd3.appspot.com",
-    messagingSenderId: "424889950032",
-    appId: "1:424889950032:web:fc388eaeaf13864801d655",
-    measurementId: "G-F3248LZV22",
+    apiKey: process.env.NEXT_PUBLIC_apiKey,
+    authDomain: process.env.NEXT_PUBLIC_authDomain,
+    projectId: process.env.NEXT_PUBLIC_projectId,
+    storageBucket: process.env.NEXT_PUBLIC_storageBucket,
+    messagingSenderId: process.env.NEXT_PUBLIC_messagingSenderId,
+    appId: process.env.NEXT_PUBLIC_appId,
+    measurementId: process.env.NEXT_PUBLIC_measurementId,
 };
 
 initializeApp(firebaseConfig);
