@@ -75,3 +75,5 @@ export function JSONToPost(data): DocumentData {
         updatedAt: Timestamp.now(),
     };
 }
+
+export const fromMillis = Timestamp.fromMillis;
